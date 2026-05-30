@@ -563,16 +563,6 @@ function Header({ language, setLanguage, t }) {
 
   return (
     <header className="site-header">
-      <a className="brand" href="#accueil" aria-label={t.backHomeLabel} onClick={() => setOpen(false)}>
-        <span className="brand-mark" aria-hidden="true">
-          IT
-        </span>
-        <span>
-          <strong>{profile.brand}</strong>
-          <small>{t.brandTagline}</small>
-        </span>
-      </a>
-
       <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Main navigation">
         {t.navigation.map((item) => (
           <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
@@ -614,8 +604,7 @@ function Header({ language, setLanguage, t }) {
 function Hero({ t }) {
   return (
     <section className="hero">
-      <div className="hero-media" aria-hidden="true"></div>
-      <div className="hero-overlay" aria-hidden="true"></div>
+      <div className="hero-grid" aria-hidden="true"></div>
       <div className="hero-content section-shell">
         <p className="eyebrow">{t.hero.eyebrow}</p>
         <h1>{t.hero.title}</h1>
@@ -665,9 +654,12 @@ function Services({ t }) {
       </div>
 
       <div className="service-grid">
-        {t.services.map((service) => (
+        {t.services.map((service, index) => (
           <Reveal as="article" className="service-card" key={service.title}>
-            <Icon name={service.icon} tone={service.tone} />
+            <div className="service-card-top">
+              <Icon name={service.icon} tone={service.tone} />
+              <span className="card-index">{String(index + 1).padStart(2, "0")}</span>
+            </div>
             <h3>{service.title}</h3>
             <p>{service.text}</p>
             <ul>
