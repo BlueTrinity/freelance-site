@@ -5,6 +5,13 @@ const profile = {
   email: "ramtin.khoshniat@outlook.com",
 };
 
+const brandInitials = profile.brand
+  .split(/\s+/)
+  .map((word) => word[0])
+  .join("")
+  .slice(0, 2)
+  .toUpperCase();
+
 const content = {
   fr: {
     locale: "fr-BE",
@@ -16,6 +23,7 @@ const content = {
       ogTitle: "Développeur indépendant informatique",
       ogDescription:
         "Sites web professionnels, applications métier Windows, automatisations et bases de données fiables pour indépendants, PME et commerces.",
+      ogLocale: "fr_BE",
     },
     brandTagline: "Développeur indépendant",
     location: "Belgique et France, à distance",
@@ -27,7 +35,9 @@ const content = {
       { label: "Méthode", href: "#process" },
       { label: "Contact", href: "#contact" },
     ],
+    skipToContent: "Aller au contenu",
     languageLabel: "Choisir la langue",
+    navLabel: "Navigation principale",
     menuLabel: "Ouvrir le menu",
     closeMenuLabel: "Fermer le menu",
     backHomeLabel: "Retour à l'accueil",
@@ -246,6 +256,7 @@ const content = {
       ogTitle: "Freelance IT Developer",
       ogDescription:
         "Professional websites, Windows business applications, automations and reliable databases for freelancers, small businesses and local companies.",
+      ogLocale: "en_US",
     },
     brandTagline: "Independent software developer",
     location: "Belgium and France, remote",
@@ -257,7 +268,9 @@ const content = {
       { label: "Process", href: "#process" },
       { label: "Contact", href: "#contact" },
     ],
+    skipToContent: "Skip to content",
     languageLabel: "Choose language",
+    navLabel: "Main navigation",
     menuLabel: "Open menu",
     closeMenuLabel: "Close menu",
     backHomeLabel: "Back to home",
@@ -555,15 +568,50 @@ function Reveal({ as: Component = "div", className = "", children }) {
 
 function Header({ language, setLanguage, t }) {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef(null);
 
   function chooseLanguage(code) {
     setLanguage(code);
     setOpen(false);
   }
 
+  useEffect(() => {
+    if (!open) return undefined;
+
+    function handleKey(event) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    function handlePointer(event) {
+      if (headerRef.current && !headerRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleKey);
+    document.addEventListener("pointerdown", handlePointer);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.removeEventListener("pointerdown", handlePointer);
+    };
+  }, [open]);
+
   return (
-    <header className="site-header">
-      <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Main navigation">
+    <header className="site-header" ref={headerRef}>
+      <a className="brand" href="#accueil" aria-label={t.backHomeLabel} onClick={() => setOpen(false)}>
+        <span className="brand-mark" aria-hidden="true">
+          {brandInitials}
+        </span>
+        <span className="brand-text">
+          <strong>{profile.brand}</strong>
+          <small>{t.brandTagline}</small>
+        </span>
+      </a>
+
+      <nav
+        id="primary-nav"
+        className={`main-nav ${open ? "is-open" : ""}`}
+        aria-label={t.navLabel}
+      >
         {t.navigation.map((item) => (
           <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
             {item.label}
@@ -591,6 +639,7 @@ function Header({ language, setLanguage, t }) {
           type="button"
           aria-label={open ? t.closeMenuLabel : t.menuLabel}
           aria-expanded={open}
+          aria-controls="primary-nav"
           onClick={() => setOpen((value) => !value)}
         >
           <span></span>
@@ -912,13 +961,17 @@ export default function App() {
     updateMeta('meta[name="description"]', t.seo.description);
     updateMeta('meta[property="og:title"]', t.seo.ogTitle);
     updateMeta('meta[property="og:description"]', t.seo.ogDescription);
+    updateMeta('meta[property="og:locale"]', t.seo.ogLocale);
   }, [language, t]);
 
   return (
     <>
       <JsonLd t={t} />
+      <a className="skip-link" href="#accueil">
+        {t.skipToContent}
+      </a>
       <Header language={language} setLanguage={setLanguage} t={t} />
-      <main id="accueil">
+      <main id="accueil" tabIndex={-1}>
         <Hero t={t} />
         <Intro t={t} />
         <Services t={t} />

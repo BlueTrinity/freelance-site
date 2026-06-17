@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Freelance IT">
+  <rect width="64" height="64" rx="6" fill="#16181a" />
+  <g fill="none" stroke="#8bb7a6" stroke-width="1" opacity="0.35">
+    <path d="M16 8v48M32 8v48M48 8v48M8 16h48M8 32h48M8 48h48" />
+  </g>
+  <path d="M22 18h22v6H30v8h12v6H30v10h-8z" fill="#f6f5f1" />
+  <rect x="42" y="40" width="6" height="6" fill="#2f5d4e" />
+</svg>

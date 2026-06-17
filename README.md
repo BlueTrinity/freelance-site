@@ -1,6 +1,8 @@
 # Freelance IT Site
 
-Professional React/Vite portfolio and lead-generation site for an IT freelancer.
+A bilingual (FR/EN) React + Vite portfolio and lead-generation site for an IT
+freelancer. Single-page, no backend — the contact flow builds a pre-filled
+`mailto:` brief.
 
 ## Run locally
 
@@ -12,27 +14,40 @@ npm run dev
 ## Build for hosting
 
 ```bash
-npm run build
+npm run build      # outputs to dist/
+npm run preview    # serve the production build locally
 ```
-
-The production files will be generated in `dist/`.
-
-## Deploy
-
-This project is ready for common static hosts:
-
-- Vercel: import the project, build command `npm run build`, output folder `dist`
-- Netlify: build command `npm run build`, publish directory `dist`
-- GitHub Pages: build with Vite and publish the `dist` folder
 
 ## Customize
 
-Edit your business details in `src/App.jsx`:
+All copy lives in `src/App.jsx`:
 
-- `brand`
-- `email`
-- `phone`
-- `phoneHref`
-- `location`
+- **`profile`** — `brand` and `email` (used in the header, contact card,
+  footer, JSON-LD and the brief `mailto:`).
+- **`content.fr` / `content.en`** — every translatable string, including
+  `location`, `availability`, services, offers, FAQ and SEO metadata. Add a
+  language by adding a key here and to `languageCodes`.
 
-The hero image is stored at `public/assets/hero-workspace.png`.
+Visual design is driven by CSS custom properties at the top of
+`src/styles.css` (the "Studio" theme: chalk paper, graphite ink, evergreen
+accent). The favicon is `public/favicon.svg`.
+
+## Deploy
+
+Static output in `dist/` works on any static host:
+
+- **GitHub Pages** — automated via `.github/workflows/deploy.yml` on push to
+  `main`. `vite.config.js` uses `base: "./"` so relative asset paths work under
+  a project subpath.
+- **Vercel / Netlify** — build command `npm run build`, output/publish `dist`.
+
+### Docker
+
+A multi-stage `Dockerfile` builds the site and serves it with nginx
+(`nginx.conf` adds gzip, long-lived caching for hashed assets, and security
+headers):
+
+```bash
+docker build -t freelance-site .
+docker run -p 8080:80 freelance-site
+```
